@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Store Management System</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    nav { background: #333; color: white; padding: 10px; display: flex; }
+    nav button { margin-right: 10px; background: #444; color: white; border: none; padding: 10px; cursor: pointer; }
+    section { display: none; padding: 20px; }
+    section.active { display: block; }
+    input, select, button { margin: 5px 0; padding: 8px; width: 100%; max-width: 400px; }
+    .container { max-width: 800px; margin: auto; }
+    .scanner-box, .barcode-box { margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <button onclick="showTab('auth')">🔐 Authentication</button>
+    <button onclick="showTab('products')">📦 Products</button>
+    <button onclick="showTab('sales')">💰 Sales</button>
+    <button onclick="showTab('purchases')">📥 Purchases</button>
+    <button onclick="showTab('inventory')">📊 Inventory</button>
+    <button onclick="showTab('reports')">📈 Reports</button>
+  </nav>
+
+  <div class="container">
+
+    <!-- Authentication -->
+    <section id="auth" class="active">
+      <h2>User Authentication</h2>
+      <input type="text" placeholder="Username">
+      <input type="password" placeholder="Password">
+      <select>
+        <option>Admin</option>
+        <option>Cashier</option>
+        <option>Manager</option>
+      </select>
+      <button>Login</button>
+      <button>Register</button>
+    </section>
+
+    <!-- Products -->
+    <section id="products">
+      <h2>Product Management</h2>
+      <input type="text" placeholder="Product Name">
+      <input type="text" placeholder="SKU / Barcode">
+      <input type="number" placeholder="Price">
+      <input type="number" placeholder="Stock Quantity">
+      <textarea placeholder="Description"></textarea>
+      <button>Add Product</button>
+      <div class="barcode-box">
+        <h4>Barcode Preview:</h4>
+        <svg id="barcode"></svg>
+      </div>
+    </section>
+
+    <!-- Sales -->
+    <section id="sales">
+      <h2>Sales (POS)</h2>
+      <input type="text" id="scan-input" placeholder="Scan Barcode or QR Code">
+      <div class="scanner-box">
+        <h4>Live Scanner:</h4>
+        <div id="reader" style="width:300px"></div>
+      </div>
+      <button>Process Sale</button>
+    </section>
+
+    <!-- Purchases -->
+    <section id="purchases">
+      <h2>Purchase Order</h2>
+      <input type="text" placeholder="Supplier Name">
+      <input type="text" placeholder="Product Barcode">
+      <input type="number" placeholder="Quantity">
+      <button>Add Purchase</button>
+    </section>
+
+    <!-- Inventory -->
+    <section id="inventory">
+      <h2>Inventory Management</h2>
+      <button>View Stock</button>
+    </section>
+
+    <!-- Reports -->
+    <section id="reports">
+      <h2>Reports</h2>
+      <button>Generate Daily Sales</button>
+      <button>Inventory Status</button>
+      <button>Purchase History</button>
+    </section>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <script>
+    function showTab(tabId) {
+      document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+    }
+
+    // Barcode generation demo
+    JsBarcode("#barcode", "123456789012");
+
+    // QR / Barcode scanner init
+    const qrScanner = new Html5Qrcode("reader");
+    qrScanner.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      (decodedText, decodedResult) => {
+        document.getElementById("scan-input").value = decodedText;
+        qrScanner.stop(); // Optional: stop after first scan
+      }
+    );
+  </script>
+</body>
+</html>
